@@ -9,11 +9,11 @@ from umqtt.simple import MQTTClient
 SSID = "Robotic WIFI"
 PASSWORD = "rbtWIFI@2025"
 
-BROKER = "test.mosquitto.org"
+BROKER = "broker.emqx.io"
 PORT = 1883
 TOPIC = b"lab4/environment"
 CLIENT_ID = b"esp32-lab4-main-7f3a"
-KEEPALIVE = 30
+KEEPALIVE = 5
 
 SEA_LEVEL_HPA = 1013.25
 BMP_ADDR = 0x76             # change to 0x77 if the I2C scan shows 0x77

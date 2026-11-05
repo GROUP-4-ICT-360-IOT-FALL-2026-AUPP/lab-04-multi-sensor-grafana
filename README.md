@@ -70,6 +70,14 @@ The MQTT publisher just reads all sensor data, compute all values, and then send
 
 The code for the MQTT publisher is located [here](./task_004_pressure_altitude_monitoring/mqtt_publisher.py)
 
+We can upload the code by doing:
+
+```
+mpremote ./task_004_pressure_altitude_monitoring/mqtt_publisher/main.py :main.py
+```
+
+And then the code should run everytime we reboot the device
+
 The flowchart for the MQTT publisher (on the ESP32):
 
 ![](./flowcharts/output/task_004_publisher.svg)
@@ -163,15 +171,43 @@ The most common method it to use this library:
 uv add paho-mqtt
 ```
 
-Example code:
+Now we can run the middle man, the code is located [here](./task_004_pressure_altitude_monitoring/mqtt_subscriber/src/main.py)
 
+Just change directory on there and just run (if have UV):
 
-```python
-from paho.mqtt import client as mqtt_client
-
-# Define configuration variables
-BROKER = 'broker.hivemq.com'  # Public test broker
-PORT = 1883
-TOPIC = "python/mqtt/test"
-CLIENT_ID = "python-mqtt-subscriber-123"
 ```
+uv run ./src/main.py
+```
+
+We can view the data in influxdb
+
+![data in influxdb](./assets/task_004_influx_db_data.png)
+
+### Grafana
+
+Now we can query from Grafana
+
+First we must start the Grafana service:
+
+```
+systemctl status grafana
+```
+
+Now we can visit `http://localhost:3000`
+
+The sampled query for the flux language looks like this:
+
+```
+from(bucket: "lab-04-task-04")
+  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)
+  |> filter(fn: (r) =>
+    r._measurement == "lab-04-task-04-measurement" and
+    r._field == "risk_level"
+  )
+```
+
+Picture of Grafana dashboard:
+
+![](./assets/task_004_grafana_dashboard.png)
+
+Video showcase is linked [here](https://youtu.be/UGs35kIkLPs?si=jE977pMJXrcGKdzb).
