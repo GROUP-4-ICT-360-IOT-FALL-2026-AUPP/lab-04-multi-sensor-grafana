@@ -9,7 +9,7 @@ from umqtt.simple import MQTTClient
 SSID = "Robotic WIFI"
 PASSWORD = "rbtWIFI@2025"
 
-BROKER = "10.30.0.99"
+BROKER = "test.mosquitto.org"
 PORT = 1883
 TOPIC = b"lab4/environment"
 CLIENT_ID = b"esp32-lab4-main-7f3a"
