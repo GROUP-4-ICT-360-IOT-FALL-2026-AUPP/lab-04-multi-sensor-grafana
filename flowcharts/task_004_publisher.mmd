@@ -1,0 +1,10 @@
+graph TD
+    Start([Start]) --> WifiStart[Start Wifi]
+    WifiStart --> InitAllSensors["Initialize all i2c sensors (BMP280, Body temperature, real time clock) and initialize gas ADC"]
+    InitAllSensors --> ConnectToBroker[Connect to MQTT broker]
+    ConnectToBroker --> WhileTrue{While True}
+    WhileTrue -- False --> End([End])
+    WhileTrue -- True --> ReadSensor["Read all sensors, compute all values (as seen in other tasks)"]
+    ReadSensor --> SendDataToBroker[Send data to MQTT Broker]
+    SendDataToBroker --> Wait[Wait n seconds]
+    Wait --> WhileTrue

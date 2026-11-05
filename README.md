@@ -4,6 +4,11 @@ Wiring diagram (from the assignment):
 
 ![](./assets/wiring_diagram.png)
 
+Real wiring on the actual board :
+
+![](./assets/wiring_diagram.png)
+
+
 # General Idea
 
 We read the sensor data, processes it and then send the data from the ESP32 to an MQTT broker.
@@ -61,4 +66,10 @@ Task 4 is divided into 2 parts:
 
 ## MQTT publisher
 
-The code for the MQTT publisher is located here.
+The MQTT publisher just reads all sensor data, compute all values, and then send it to the MQTT broker
+
+The code for the MQTT publisher is located [here](./task_004_pressure_altitude_monitoring/mqtt_publisher.py)
+
+The flowchart for the MQTT publisher (on the ESP32):
+
+![](./flowcharts/output/task_004_publisher.svg)
