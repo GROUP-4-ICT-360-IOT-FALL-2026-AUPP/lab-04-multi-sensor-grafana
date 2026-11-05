@@ -1,0 +1,11 @@
+graph TD
+    Start([Start]) --> WifiStart[Start Wifi]
+    WifiStart --> InitADC[Initialize Gas ADC]
+    InitADC --> ConnectToBroker[Connect to MQTT broker]
+    ConnectToBroker --> WhileTrue{While True}
+    WhileTrue -- False --> End([End])
+    WhileTrue -- True --> ReadSensor[Read Gas Sensor]
+    ReadSensor --> ComputeMovingAverage[Compute Moving Average]
+    ComputeMovingAverage --> SendDataToBroker[Send data to MQTT Broker]
+    SendDataToBroker --> Wait[Wait n seconds]
+    Wait --> WhileTrue

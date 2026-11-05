@@ -1,0 +1,12 @@
+graph TD
+    Start([Start]) --> WifiStart[Start Wifi]
+    WifiStart --> InitADC[Initialize Gas ADC]
+    InitADC --> ConnectToBroker[Connect to MQTT broker]
+    ConnectToBroker --> WhileTrue{While True}
+    WhileTrue -- False --> End([End])
+    WhileTrue -- True --> ReadSensor[Read Gas Sensor]
+    ReadSensor --> ComputeMovingAverage[Compute Moving Average]
+    ComputeMovingAverage --> GetWarningLevels[if raw adc value is less than 2100, safe; if from 2100 to 2599, warning; if greater than or equals to 2600, danger]
+    GetWarningLevels --> SendDataToBroker[Send data to MQTT Broker]
+    SendDataToBroker --> Wait[Wait n seconds]
+    Wait --> WhileTrue
