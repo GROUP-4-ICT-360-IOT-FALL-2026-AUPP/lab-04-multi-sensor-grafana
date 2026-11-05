@@ -1,0 +1,5 @@
+graph TD
+  ReceiverSensorData["ESP32 receives sensor data"] --> SendDataToMQTT["ESP32 publish data to MQTT broker"]
+  SendDataToMQTT --> MQTTSendDataToSubscriber["MQTT broker sends data to subscribers (our python script, or node-red)"]
+  MQTTSendDataToSubscriber --> PythonScript["Python script subscribes and send data to influxdb"]
+  PythonScript --> Grafana["Grafana takes data from influxdb and then visualize it"]

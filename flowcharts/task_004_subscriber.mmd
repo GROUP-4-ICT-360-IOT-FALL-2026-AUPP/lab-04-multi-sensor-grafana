@@ -1,0 +1,7 @@
+graph TD
+  Start([Start]) --> Initialize["Initialize MQTT client and influxdb client"]
+  Initialize --> WhileTrue{While True}
+  WhileTrue -- False --> End([End])
+  WhileTrue -- True --> ReceiveDataFromMQTT["Receive data from MQTT"]
+  ReceiveDataFromMQTT --> PublishDataToInfluxDB["publish data to influx db"]
+  PublishDataToInfluxDB --> WhileTrue

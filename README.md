@@ -64,6 +64,10 @@ Task 4 is divided into 2 parts:
 - the MQTT publisher (ESP32)
 - the MQTT subscriber (Seperate computer with a database server)
 
+The general workflow is going to be as such:
+
+![](./flowcharts/output/task_004_overall_workflow.svg)
+
 ## MQTT publisher
 
 The MQTT publisher just reads all sensor data, compute all values, and then send it to the MQTT broker
@@ -172,6 +176,10 @@ uv add paho-mqtt
 ```
 
 Now we can run the middle man, the code is located [here](./task_004_pressure_altitude_monitoring/mqtt_subscriber/src/main.py)
+
+The flowchart for the `python` middleman:
+
+![](./flowcharts/output/task_004_subscriber.svg)
 
 Just change directory on there and just run (if have UV):
 
