@@ -73,3 +73,105 @@ The code for the MQTT publisher is located [here](./task_004_pressure_altitude_m
 The flowchart for the MQTT publisher (on the ESP32):
 
 ![](./flowcharts/output/task_004_publisher.svg)
+
+![](./flowcharts/output/task_004_publisher.drawio.svg)
+
+Simple MQTT output from node red:
+
+![](./assets/task_004_mqtt_subscriber.jpg)
+
+## MQTT subscriber
+
+So we can use node red to subscribe to the MQTT broker and then save it to an `influxdb`, or we can also use a python script to do the same thing.
+
+For testing, we can use something like `mosquitto_sub` to listen to it.
+
+```
+$ mosquitto_sub -t lab4/environment -h "10.30.0.99" -p 1883
+{"pressure": 650.65, "fever_flag": 0, "altitude": 3583.6, "risk_code": 0, "risk_level": "SAFE", "body_temp": 29.51, "gas_raw": 1905, "timestamp": "2000-07-12 21:56:44", "gas_avg": 1906.4}
+{"pressure": 650.65, "fever_flag": 0, "altitude": 3583.6, "risk_code": 0, "risk_level": "SAFE", "body_temp": 29.51, "gas_raw": 1904, "timestamp": "2000-07-12 21:56:45", "gas_avg": 1906.4}
+{"pressure": 650.65, "fever_flag": 0, "altitude": 3583.6, "risk_code": 0, "risk_level": "SAFE", "body_temp": 29.45, "gas_raw": 1904, "timestamp": "2000-07-12 21:56:46", "gas_avg": 1906.4}
+```
+
+### Starting `influxdb`
+
+First of all, we will start the `influxdb` service
+
+```
+sudo systemctl start influxdb.service
+```
+
+Now we can see it running by doing `sudo systemctl status influxdb`
+
+Now we can configure the database by going to `http://localhost:8086`
+
+To send data to the database using python, first, we create a virtual environment (optional) and then just install:
+
+```
+pip install influxdb-client
+```
+
+Or if using `uv`:
+
+```
+uv add influxdb-client
+```
+
+We can send random numbers like this:
+
+```python
+import random
+import env
+
+from influxdb_client import InfluxDBClient, Point
+from influxdb_client.client.write_api import SYNCHRONOUS
+
+URL = "http://localhost:8086"
+ORG = "aupp"
+BUCKET = "random-numbers"
+TOKEN = env.TOKEN
+WRITE_AMOUNT = 100
+
+RANDOM_RANGE = (0, 100)
+
+if __name__ == "__main__":
+    with InfluxDBClient(url=URL, token=TOKEN, org=ORG) as client:
+        with client.write_api(write_options=SYNCHRONOUS) as write_api:
+            for _ in range(WRITE_AMOUNT):
+                number = random.randint(*RANDOM_RANGE)
+
+                point = (
+                    Point("random_numbers")
+                    .field("value", float(number))
+                )
+
+                write_api.write(
+                    bucket=BUCKET,
+                    record=point,
+                )
+
+                print(f"Wrote: {number}")
+```
+
+More practically, we create a new bucket called `lab-04-task-04`
+
+### Subscribing to MQTT client using python
+
+The most common method it to use this library:
+
+```
+uv add paho-mqtt
+```
+
+Example code:
+
+
+```python
+from paho.mqtt import client as mqtt_client
+
+# Define configuration variables
+BROKER = 'broker.hivemq.com'  # Public test broker
+PORT = 1883
+TOPIC = "python/mqtt/test"
+CLIENT_ID = "python-mqtt-subscriber-123"
+```
